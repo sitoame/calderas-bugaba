@@ -13,6 +13,8 @@ def _normalize_value(value):
 
 def _build_payload(results, tags_map):
     payload = {}
+    if not isinstance(results, (list, tuple)):
+        results = [results]
     for result in results:
         if result is None:
             continue
