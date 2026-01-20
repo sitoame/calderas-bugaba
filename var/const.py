@@ -3,7 +3,7 @@ VERSION = "1"
 NOMBRE = "Calderas"
 
 plc_targets = {
-    'CALDERA_1_prueba_2': {
+    'CALDERA_1_prueba_5': {
         'ip': '172.17.31.87',
     },
     # 'CALDERA_2_prueba': {
@@ -140,7 +140,7 @@ plc_tags = {
     # 'AWR[9]': 'awr_9',
 
     # -- AB --
-    # 'AB[3].11': 'modo_automatico',
+    'AB[3].11': 'modo_automatico',
 }
 
 plc_write_tags = {
@@ -149,10 +149,10 @@ plc_write_tags = {
 }
 
 mqtt_config = {
-    "broker": "localhost",
+    "broker": "172.17.31.11",
     "port": 1883,
-    "username": None,
-    "password": None,
+    "username": 'telegraf',
+    "password": 'telegraf',
 }
 
 mqtt_write_topics = {
