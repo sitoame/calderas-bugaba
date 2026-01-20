@@ -60,24 +60,29 @@ def _normalize_record(raw, default_name):
         return None
 
     if 'measurement' in raw and 'fields' in raw:
-        return _coerce_boolean_fields(raw)
+        return _coerce_numeric_fields(raw)
 
     if 'name' in raw and isinstance(raw.get('data'), dict):
         measurement = raw.get('measurement') or raw['name'] or default_name
-        return _coerce_boolean_fields(json_formatter.formatJson(raw['data'], measurement))
+        return _coerce_numeric_fields(json_formatter.formatJson(raw['data'], measurement))
 
     # Si recibimos un simple dict de campos, úsalos como fields
-    return _coerce_boolean_fields(json_formatter.formatJson(raw, raw.get('measurement', default_name)))
+    return _coerce_numeric_fields(json_formatter.formatJson(raw, raw.get('measurement', default_name)))
 
 
-def _coerce_boolean_fields(record):
-    """Convierte fields booleanos a 0/1 para evitar tipos boolean en Influx."""
+def _coerce_numeric_fields(record):
+    """Normaliza fields booleanos e int a float para evitar conflictos de tipo en Influx."""
     fields = record.get('fields')
     if not isinstance(fields, dict):
         return record
     normalized = {}
     for key, value in fields.items():
-        normalized[key] = int(value) if isinstance(value, bool) else value
+        if isinstance(value, bool):
+            normalized[key] = float(value)
+        elif isinstance(value, int):
+            normalized[key] = float(value)
+        else:
+            normalized[key] = value
     record['fields'] = normalized
     return record
 
