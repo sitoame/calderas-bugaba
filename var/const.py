@@ -3,10 +3,10 @@ VERSION = "1"
 NOMBRE = "Calderas"
 
 plc_targets = {
-    'CALDERA_1_prueba_6': {
+    'CALDERA_1': {
         'ip': '172.17.31.87',
     },
-    'CALDERA_2_prueba_6': {
+    'CALDERA_2': {
         'ip': '172.17.31.86',
     }
 }
@@ -96,7 +96,7 @@ plc_tags = {
     # 'AB[2].11': 'combustible_2_seleccionado',
     # 'AB[2].12': 'pulsacion_hacia_bms',
     # 'AB[2].13': 'apagado_lwco',
-    # 'AB[2].14': 'habilitacion_remota',
+    'AB[2].14': 'habilitacion_remota',
     # 'AB[2].15': 'interruptor_quemador',
 
     # ---- AB[3] ----
@@ -181,7 +181,7 @@ mqtt_write_topics = {
 url_influx = 'http://172.17.31.11:8086'
 api_token_influx = '8v5ffFjMYmQrZEwWInZj_OjOUTO6gXNf_6DB6yMV1Yq2fJK1Z043V6TOdgS4wHrE6PjwyV7KJY--Mi14s8hAdA=='
 org_influx = 'maxia'
-bucket_influx = 'sensores_prueba_3'
+bucket_influx = 'sensores_calderas'
 
 # Valores por defecto reportados por el controlador cuando no tiene datos reales.
 # Se expresan en unidades finales (ej. 65.35k -> 65350.0).
