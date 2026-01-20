@@ -39,7 +39,13 @@ def _resolve_write_tag(tag, tag_aliases):
     return None
 
 
-def _coerce_write_value(value):
+def _coerce_write_value(value, tag):
+    if isinstance(tag, str):
+        if tag.startswith("AWB["):
+            return _coerce_write_boolean(value)
+        if tag.startswith("AWR["):
+            return _coerce_write_analog(value)
+
     if isinstance(value, (bool, int, float)):
         return value
 
@@ -57,6 +63,38 @@ def _coerce_write_value(value):
             return value
 
     return value
+
+
+def _coerce_write_boolean(value):
+    if isinstance(value, bool):
+        return value
+    if isinstance(value, (int, float)):
+        return bool(value)
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        if normalized in ("true", "false"):
+            return normalized == "true"
+        if normalized in ("1", "0"):
+            return normalized == "1"
+    return None
+
+
+def _coerce_write_analog(value):
+    if isinstance(value, bool):
+        return int(value)
+    if isinstance(value, (int, float)):
+        return float(value)
+    if isinstance(value, str):
+        normalized = value.strip().lower()
+        try:
+            return int(normalized)
+        except ValueError:
+            pass
+        try:
+            return float(normalized)
+        except ValueError:
+            return None
+    return None
 
 
 def _parse_write_payload(raw, tag_aliases):
@@ -86,8 +124,8 @@ def _parse_write_payload(raw, tag_aliases):
     if resolved_tag is None:
         return None
 
-    value = _coerce_write_value(raw.get("value"))
-    if value is None and raw.get("value") is None:
+    value = _coerce_write_value(raw.get("value"), resolved_tag)
+    if value is None:
         return None
 
     return resolved_tag, value
