@@ -1,4 +1,5 @@
 import json
+import math
 import os
 import time
 import sqlite3
@@ -77,12 +78,27 @@ def _coerce_numeric_fields(record):
         return record
     normalized = {}
     for key, value in fields.items():
+        if value is None:
+            continue
+        if hasattr(value, "item") and not isinstance(
+            value, (bool, int, float, str, bytes, bytearray, list, tuple, dict)
+        ):
+            try:
+                value = value.item()
+            except Exception:
+                pass
         if isinstance(value, bool):
             normalized[key] = float(value)
         elif isinstance(value, int):
             normalized[key] = float(value)
+        elif isinstance(value, float):
+            if not math.isfinite(value):
+                continue
+            normalized[key] = value
         else:
             normalized[key] = value
+    if not normalized:
+        return None
     record['fields'] = normalized
     return record
 
