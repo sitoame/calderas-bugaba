@@ -1,0 +1,4 @@
+-t "CALDERA_1" -m '{"field":"arranque_rem_bms","value":1}'
+
+-t "CALDERA_1" -m '{"field":"caldera_sp","value":6.90}'
+-t "CALDERA_1" -m '{"field":"firing_rate","value":70.0}'
