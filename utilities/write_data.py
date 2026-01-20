@@ -60,14 +60,40 @@ def _normalize_record(raw, default_name):
         return None
 
     if 'measurement' in raw and 'fields' in raw:
-        return raw
+        record = dict(raw)
+        record['fields'] = _normalize_binary_fields(record.get('fields'))
+        return record
 
     if 'name' in raw and isinstance(raw.get('data'), dict):
         measurement = raw.get('measurement') or raw['name'] or default_name
-        return json_formatter.formatJson(raw['data'], measurement)
+        record = json_formatter.formatJson(raw['data'], measurement)
+        record['fields'] = _normalize_binary_fields(record.get('fields'))
+        return record
 
     # Si recibimos un simple dict de campos, úsalos como fields
-    return json_formatter.formatJson(raw, raw.get('measurement', default_name))
+    record = json_formatter.formatJson(raw, raw.get('measurement', default_name))
+    record['fields'] = _normalize_binary_fields(record.get('fields'))
+    return record
+
+
+def _normalize_binary_fields(fields):
+    if not isinstance(fields, dict):
+        return fields
+    normalized = {}
+    for key, value in fields.items():
+        if isinstance(value, bool):
+            normalized[key] = 1 if value else 0
+        elif isinstance(value, str):
+            trimmed = value.strip().lower()
+            if trimmed in {"true", "false"}:
+                normalized[key] = 1 if trimmed == "true" else 0
+            elif trimmed in {"0", "1"}:
+                normalized[key] = int(trimmed)
+            else:
+                normalized[key] = value
+        else:
+            normalized[key] = value
+    return normalized
 
 
 def _try_get_write_api():
