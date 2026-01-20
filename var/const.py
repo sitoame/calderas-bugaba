@@ -143,6 +143,23 @@ plc_tags = {
     # 'AB[3].11': 'modo_automatico',
 }
 
+plc_write_tags = {
+    'AWB[0].0': 'pulsacion_bms',
+    'AWB[0].1': 'arranque_rem_bms',
+}
+
+mqtt_config = {
+    "broker": "localhost",
+    "port": 1883,
+    "username": None,
+    "password": None,
+}
+
+mqtt_write_topics = {
+    name: f"calderas/{name}/write"
+    for name in plc_targets.keys()
+}
+
 url_influx = 'http://172.17.31.11:8086'
 api_token_influx = '8v5ffFjMYmQrZEwWInZj_OjOUTO6gXNf_6DB6yMV1Yq2fJK1Z043V6TOdgS4wHrE6PjwyV7KJY--Mi14s8hAdA=='
 org_influx = 'maxia'

@@ -30,3 +30,30 @@ python main.py
 
 El proceso lector consulta los tags cada 10 segundos y publica el payload
 para ingesta inmediata en InfluxDB.
+
+## Escritura a PLC vía MQTT
+
+El servicio también escucha comandos MQTT para escritura de tags en el PLC.
+Configura el broker y los topics en `var/const.py`:
+
+- `plc_write_tags`: tags permitidos para escritura (con alias opcional).
+- `mqtt_config`: broker, puerto y credenciales.
+- `mqtt_write_topics`: topic por PLC (por defecto `calderas/<plc>/write`).
+
+Payload esperado (JSON):
+
+```json
+{
+  "tag": "AWB[0].0",
+  "value": true
+}
+```
+
+También se puede usar `field` con el alias definido en `plc_write_tags`:
+
+```json
+{
+  "field": "pulsacion_bms",
+  "value": 1
+}
+```

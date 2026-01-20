@@ -42,9 +42,19 @@ def start():
             name=f"writer:{name}",
         )
 
+        mqtt_cfg = dict(const.mqtt_config)
+        mqtt_cfg["topic"] = const.mqtt_write_topics.get(name)
+        plc_writer = mp.Process(
+            target=plc.plc_write_listener,
+            args=(address, const.plc_write_tags, mqtt_cfg, name),
+            daemon=True,
+            name=f"plc-writer:{name}",
+        )
+
         reader.start()
         writer.start()
-        processes.extend([reader, writer])
+        plc_writer.start()
+        processes.extend([reader, writer, plc_writer])
 
     def _graceful_exit(signum=None, frame=None):
         print("[SHUTDOWN] Señal recibida, cerrando procesos…", flush=True)
